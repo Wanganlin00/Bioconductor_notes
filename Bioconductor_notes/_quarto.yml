@@ -11,12 +11,11 @@ book:
       chapters: 
         - index.qmd
         - intro.qmd
-        - summary.qmd
 
 execute:
   warning: false
 toc: true
-toc-depth: 4
+toc-depth: 3
 toc-location: right
 number-sections: true
 knitr:
