@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Bioconductor_notes",
     "section": "",
-    "text": "1 前言\nThis is a book about Single-Cell Analysis。\nTo learn more about Single-Cell Analysis visit https://bioconductor.org/books/release/OSCA/.\nCodelibrary(ggplot2)\nlibrary(BiocManager)\nCodeBiocManager::version()\nBiocManager::install()\nBiocManager::install(\"OSCA.intro\")\n来自单细胞RNA-seq实验的测序数据必须转换为表达值矩阵。这通常是一个计数矩阵，包含映射到每个细胞（列）中每个基因（行）的读取数。计数可以是唯一分子标识符 （unique molecular identifiers，UMI） 的数量。"
+    "text": "1 前言\nThis is a book about Single-Cell Analysis。\nTo learn more about Single-Cell Analysis visit https://bioconductor.org/books/release/OSCA/.\nCodedevtools::session_info()[1]\nlibrary(ggplot2)\nlibrary(BiocManager)\nCodeBiocManager::version()\nBiocManager::install()\nBiocManager::install(\"OSCA.intro\")\n来自单细胞RNA-seq实验的测序数据必须转换为表达值矩阵。这通常是一个计数矩阵，包含映射到每个细胞（列）中每个基因（行）的读取数。计数可以是唯一分子标识符 （unique molecular identifiers，UMI） 的数量。"
   },
   {
     "objectID": "index.html#实验设计",
