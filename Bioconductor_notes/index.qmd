@@ -1,8 +1,6 @@
-#  前言
+# 前言
 
-This is a book about Single-cell Analysis。
-
-To learn more about Single-cell Analysis with [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/release/OSCA/).
+This is a book about Single-cell Analysis。To learn more about Single-cell Analysis with [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/release/OSCA/).
 
 # R studio环境
 

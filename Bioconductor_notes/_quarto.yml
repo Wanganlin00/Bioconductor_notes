@@ -20,7 +20,7 @@ toc-location: right
 number-sections: true
 knitr:
   opts_chunk: 
-    comment: "##>" 
+    comment: "#>" 
     collapse: TRUE
 crossref: 
   fig-title: 图
