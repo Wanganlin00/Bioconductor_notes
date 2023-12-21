@@ -2,4 +2,4 @@
   sort: 1
 ---
 
-# Sing-cell Analysis
+# Single-cell Analysis
