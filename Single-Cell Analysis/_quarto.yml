@@ -3,24 +3,26 @@ project:
   output-dir: docs
 
 book:
-  title: "Single-Cell Analysis"
+  title: "Bioconductor_notes"
   author: "王安林"
   date: "2023/12/20"
   chapters:
-    - index.qmd
-    - intro.qmd
-    - summary.qmd
+    - part: "Single-cell Analysis"
+      chapters: 
+        - index.qmd
+        - intro.qmd
+        - summary.qmd
+
 execute:
   warning: false
 toc: true
-toc-depth: 3
+toc-depth: 4
 toc-location: right
 number-sections: true
 knitr:
   opts_chunk: 
-    comment: "#>" 
+    comment: "##>" 
     collapse: TRUE
-    cache: TRUE
 crossref: 
   fig-title: 图
   fig-prefix: 图

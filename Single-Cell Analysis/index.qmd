@@ -1,4 +1,4 @@
-# 前言 {.unnumbered}
+# 前言
 
 This is a book about Single-Cell Analysis。
 
@@ -7,6 +7,8 @@ To learn more about Single-Cell Analysis visit <https://bioconductor.org/books/r
 # R studio环境
 
 ```{r}
+#| eval: false
+devtools::session_info()[1]
 library(ggplot2)
 library(BiocManager)
 ```
