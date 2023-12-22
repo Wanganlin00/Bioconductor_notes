@@ -11,6 +11,9 @@ book:
       chapters: 
         - index.qmd
         - intro.qmd
+  
+  repo-url: https://github.com/Wanganlin00/Bioconductor_notes
+  repo-actions: [edit,issue]
 
 execute:
   warning: false

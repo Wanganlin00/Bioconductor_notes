@@ -1,22 +1,8 @@
 ---
-title: "序"
+title: "前言"
 ---
+
 # 前言
 
 这是一本关于单细胞分析的书。了解更多：[Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/release/OSCA/)。
 
-# R studio环境
-
-```{r}
-#| eval: false
-devtools::session_info()[1]
-library(ggplot2)
-library(BiocManager)
-```
-
-```{r}
-#| eval: FALSE
-BiocManager::version()
-BiocManager::install()
-BiocManager::install("OSCA.intro")
-```
