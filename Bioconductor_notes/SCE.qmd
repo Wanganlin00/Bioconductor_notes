@@ -1,8 +1,8 @@
-# 数据结构`SingleCellExperiment`
+# `SingleCellExperiment`结构 {#sec-singlecellexperiment数据结构}
 
 ## 概述
 
-`SingleCellExperiment`结构如下图 @fig-SingleCell 所示。该类实现了一个数据结构，用于存储单细胞数据的所有方面------逐细胞基因表达数据、每细胞元数据和每基因注释------并以同步的方式对其进行操作。
+`SingleCellExperiment`结构如下图 @fig-SingleCell 所示。它实现了一个数据结构，用于存储单细胞数据的所有方面------逐细胞基因表达数据、每细胞元数据和每基因注释------并以同步的方式对其进行操作。
 
 ![\`SingleCellExperiment \`的结构概述。assays的每一行对应于 rowData（粉红色阴影）的一行，而assays的每一列对应于 colData 和 reducedDims（黄色阴影）的一行](images/SingleCellExperiment.png){#fig-SingleCell fig-align="center"}
 
@@ -14,22 +14,22 @@ BiocManager::install('SingleCellExperiment')
 ```
 
 载入`SingleCellExperiment`包
+
 ```{r}
 #| include: false
 conflicts_prefer(GenomicRanges::setdiff)
 ```
+
 ```{r}
 #| message: false
 library(SingleCellExperiment)
 ```
 
-
-
 ## 存储主要数据（primar data）
 
 ### 填充`assays` slot
 
-要构造一个`SingleCellExperiment`对象，我们只需要填充`assays`。 这包含原始数据，例如测序计数矩阵，其中行对应于特征（基因），列对应于样本（细胞）（ @fig-SingleCell ，蓝色框）。[点击下载：counts_Calero_20160113.tsv](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-5522)。
+要构造一个`SingleCellExperiment`对象，我们只需要填充`assays`。 这包含原始数据，例如测序计数矩阵，其中行对应于特征（基因），列对应于样本（细胞）（ @fig-SingleCell ，蓝色框）。[点击下载：counts_Calero_20160113.tsv](https://www.ebi.ac.uk/biostudies/arrayexpress/studies/E-MTAB-5522){#tbl-counts_Calero_20160113.tsv}。
 
 ```{r}
 #| cache: true
@@ -289,6 +289,7 @@ rowData(sce2) # twice as many rows
 使用 [scater](https://bioconductor.org/packages/3.18/bioc/html/scater.html)中的函数计算 PCA 、t-SNE
 
 ```{r}
+#| code-summary: "PCA"
 sce
 sce <- scater::logNormCounts(sce)
 sce <- scater::runPCA(sce)
@@ -296,26 +297,28 @@ dim(reducedDim(sce, "PCA"))
 ```
 
 ```{r}
+#| code-summary: "TSNE"
 sce <- scater::runTSNE(sce, perplexity = 0.1)
 head(reducedDim(sce, "TSNE"))
 ```
 
 ```{r}
-reducedDims(sce) 
-```
-
-```{r}
+#| code-summary: "UMAP"
 sce <- scater::runUMAP(sce)
 head(reducedDim(sce,"UMAP"))
 ```
 
-手动UMAP
-
 ```{r}
+#| code-summary: "手动UMAP"
 u <- uwot::umap(t(logcounts(sce)), n_neighbors = 2)
 reducedDim(sce, "UMAP_uwot") <- u
 reducedDims(sce) # Now stored in the object.
 head(reducedDim(sce, "UMAP_uwot"))
+```
+
+```{r}
+#| code-summary: "reduceDims()"
+reducedDims(sce) 
 ```
 
 ### 替代试验 Alternative Experiments
@@ -351,7 +354,7 @@ altExp(sub, "spike")
 
 任何`SummarizedExperiment`对象都可以存储为`alternative Experiment`, 包括另一个 `SingleCellExperiment`。
 
-### 缩放大小因子`sizeFactors`
+### 缩放因子`sizeFactors`
 
 ```{r}
 sce <- scran::computeSumFactors(sce)
@@ -367,7 +370,7 @@ summary(sizeFactors(sce))
 
 ### 列标签
 
-该函数允许我们获取或设置每个细胞标签的向量或因子，通常对应于由无监督聚类分析的分组（ @sec-basics5）。 或从分类算法预测细胞类型身份 （ @sex-basics7）
+该函数允许我们获取或设置每个细胞标签的向量或因子，通常对应于由无监督聚类分析的分组（ @sec-basics第5章）。 或从分类算法预测细胞类型身份 （ @sec-basics第7章）
 
 ```{r}
 colLabels(sce) <- scran::clusterCells(sce, use.dimred="PCA")

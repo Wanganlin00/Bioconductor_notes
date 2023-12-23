@@ -1,0 +1,58 @@
+```{r}
+#| echo: false
+conflicts_prefer(GenomicRanges::setdiff)
+```
+
+# Normalization
+
+在单细胞RNA测序数据中经常观察到文库之间测序覆盖率的系统差异, 它们通常源于跨细胞cDNA捕获或PCR扩增效率的技术差异，这归因于难以用最少的起始材料实现一致的文库制备。 归一化旨在消除这些差异，使它们不会干扰细胞之间表达谱的比较。 这确保了细胞群中观察到的任何异质性或差异表达都是由生物学驱动的，而不是技术偏差。
+
+我们将主要关注缩放归一化，这是最简单和最常用的一类归一化策略。 这涉及将每个细胞的所有计数除以细胞特定的比例因子，通常称为"大小因子(size factor)"。
+
+假设任何细胞特异性偏差（如捕获或扩增效率）都会通过缩放该细胞的预期平均计数来平等地影响所有基因。 每个细胞的大小因子表示该细胞中相对偏差的估计值，因此将其计数除以大小因子应消除该偏差。 然后，生成的"归一化表达式值"可用于下游分析，如聚类和降维。
+
+```{r 工作流第2章}
+#| cache: true
+#| message: false
+
+#--- loading ---#
+library(scRNAseq)
+sce.zeisel <- ZeiselBrainData()
+
+library(scater)
+sce.zeisel <- aggregateAcrossFeatures(sce.zeisel, 
+    id=sub("_loc[0-9]+$", "", rownames(sce.zeisel)))
+
+#--- gene-annotation ---#
+library(org.Mm.eg.db)
+rowData(sce.zeisel)$Ensembl <- mapIds(org.Mm.eg.db, 
+    keys=rownames(sce.zeisel), keytype="SYMBOL", column="ENSEMBL")
+
+#--- quality-control ---#
+stats <- perCellQCMetrics(sce.zeisel, subsets=list(
+    Mt=rowData(sce.zeisel)$featureType=="mito"))
+qc <- quickPerCellQC(stats, percent_subsets=c("altexps_ERCC_percent", 
+    "subsets_Mt_percent"))
+sce.zeisel <- sce.zeisel[,!qc$discard]
+```
+
+```{r sce.zeisel}
+sce.zeisel 
+```
+
+## 库大小归一化
+
+库大小归一化是执行缩放归一化的最简单策略。我们将文库大小定义为每个细胞所有基因的计数总和，假设其期望值随任何细胞特异性偏差而缩放。然后，每个细胞的"文库缩放因子"与其文库大小成正比，其中定义了比例常数，使得所有单元的平均缩放因子等于 1。 此定义可确保归一化表达式值与原始计数的比例相同，这对于解释很有用， 尤其是在处理转换后的数据。
+
+```{r}
+library(scater)
+lib.sf.zeisel <- librarySizeFactors(sce.zeisel)
+summary(lib.sf.zeisel)
+```
+
+```{r}
+#| fig-cap: "Zeisel 大脑数据集中从文库大小得出的缩放因子分布"
+hist(log10(lib.sf.zeisel), xlab="Log10[Size factor]", col='grey80')
+```
+
+## 通过反卷积进行归一化

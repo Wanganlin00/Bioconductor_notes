@@ -19,8 +19,10 @@ book:
         - analysis.qmd
         
         - basics.qmd
+        - QC.qmd
+        - normalization.qmd
         
-    - part: "waiting"
+    - part: "waiting ......"
     
   repo-url: https://github.com/Wanganlin00/Bioconductor_notes/
   repo-actions: [edit,issue]
@@ -39,9 +41,8 @@ knitr:
 crossref: 
   fig-title: 图
   fig-prefix: 图
-  
-fig-width: 6
-fig-asp: 0.618
+  tbl-title: 表
+  tbl-prefix: 表
 
 format: 
   html: 
