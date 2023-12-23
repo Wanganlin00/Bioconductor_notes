@@ -1,0 +1,102 @@
+# 分析概述
+
+## outline
+
+本章概述了典型scRNA-seq分析工作流程的框架（@fig-workflow）
+
+![典型 scRNA-seq 分析工作流程示意图。每个阶段（用虚线分隔）由许多特定步骤组成，其中许多步骤对实例进行操作和修改](images/workflow.png){#fig-workflow fig-align="center"}
+
+## 快速入门（简单）
+
+在这里，我们使用来自Macosko等人（2015）的基于液滴的视网膜数据集，该数据集在scRNAseq包中提供。从计数矩阵开始，以聚类（@fig-workflow ）结束。
+
+```{r}
+#| message: false
+#| cache: true
+library(scRNAseq)
+sce <- MacoskoRetinaData()
+
+# Quality control (using mitochondrial genes)线粒体基因
+library(scater)
+is.mito <- grepl("^MT-", rownames(sce))
+qcstats <- perCellQCMetrics(sce, subsets=list(Mito=is.mito))
+filtered <- quickPerCellQC(qcstats, percent_subsets="subsets_Mito_percent")
+sce <- sce[, !filtered$discard]
+
+#Normalization
+sce <- logNormCounts(sce)
+
+#Feature selection
+library(scran)
+dec <- modelGeneVar(sce)
+hvg <- getTopHVGs(dec, prop=0.1)
+
+### PCA
+library(scater)
+set.seed(1234)
+sce <- runPCA(sce, ncomponents=25, subset_row=hvg)
+
+### Clustering
+library(bluster)
+colLabels(sce) <- clusterCells(sce, use.dimred='PCA',
+    BLUSPARAM=NNGraphParam(cluster.fun="louvain"))    
+```
+
+### Visualization
+
+```{r}
+#| label: fig-umap
+#| fig-cap: 视网膜数据集的UMAP 图，其中每个点都是一个细胞，并由分配的聚类标识着色。
+sce <- runUMAP(sce, dimred = 'PCA')
+plotUMAP(sce, colour_by="label")
+```
+
+```{r}
+# Marker detection
+markers <- findMarkers(sce, test.type="wilcox", direction="up", lfc=1)
+```
+
+## 快速开始（多批次）
+
+```{r}
+sce <- SegerstolpePancreasData()
+
+# Quality control (using ERCCs).
+qcstats <- perCellQCMetrics(sce)
+filtered <- quickPerCellQC(qcstats, percent_subsets="altexps_ERCC_percent")
+sce <- sce[, !filtered$discard]
+
+# Normalization.
+sce <- logNormCounts(sce)
+
+# Feature selection, blocking on the individual of origin.
+dec <- modelGeneVar(sce, block=sce$individual)
+hvg <- getTopHVGs(dec, prop=0.1)
+
+# Batch correction.
+library(batchelor)
+set.seed(1234)
+sce <- correctExperiments(sce, batch=sce$individual, 
+    subset.row=hvg, correct.all=TRUE)
+
+# Clustering.
+colLabels(sce) <- clusterCells(sce, use.dimred='corrected')
+```
+
+### Visualization
+
+```{r}
+#| label: umap2
+#| fig-cap: 胰腺数据集的 UMAP 图，其中每个点都是一个细胞，并由分配的聚类标识（左）或起源个体（右）着色。
+sce <- runUMAP(sce, dimred = 'corrected')
+gridExtra::grid.arrange(
+    plotUMAP(sce, colour_by="label"),
+    plotUMAP(sce, colour_by="individual"),
+    ncol=2
+)
+```
+
+```{r}
+# Marker detection, blocking on the individual of origin.
+markers <- findMarkers(sce, test.type="wilcox", direction="up", lfc=1)
+```

@@ -4,23 +4,34 @@ project:
 
 book:
   title: "Bioconductor_notes"
+  reader-mode: true
   author: "王安林"
   date: "2023/12/20"
   chapters:
+  
     - part: "Single-cell Analysis"
       chapters: 
         - index.qmd
+        
         - intro.qmd
-  
-  repo-url: https://github.com/Wanganlin00/Bioconductor_notes
+        - import.qmd
+        - SCE.qmd
+        - analysis.qmd
+        
+        - basics.qmd
+        
+    - part: "waiting"
+    
+  repo-url: https://github.com/Wanganlin00/Bioconductor_notes/
   repo-actions: [edit,issue]
 
 execute:
   warning: false
+  message: false
 toc: true
 toc-depth: 3
-toc-location: right
 number-sections: true
+number-offset: 2
 knitr:
   opts_chunk: 
     comment: "#>" 
@@ -40,6 +51,7 @@ format:
     code-tools: true
     code-link: true
     html-math-method: katex
+    callout-appearance: simple
     
 editor: visual
 
